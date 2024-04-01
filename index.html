@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YAMS Dashboard</title>
+    <link rel="stylesheet" href="simple.min.css" />
+    <style>
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        padding: 20px;
+      }
+      .grid-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      .grid-item img {
+        max-width: 100%;
+        height: auto;
+      }
+      .grid-item p {
+        margin: 0;
+        text-align: center;
+      }
+      .dashboard-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0;
+      }
+      .dashboard-title img {
+        height: 60px;
+        width: 60px;
+      }
+      .grid-item img {
+        height: 120px;
+        width: 120px;
+      }
+      /* Apply font-size 10px to class caption */
+      .caption {
+        color: black;
+        font-size: 12px;
+        text-decoration: none !important;
+        border-bottom: none;
+      }
+      a {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="dashboard-title">
+      <img
+        src="logo.webp"
+        alt="YAMS Logo"
+        style="position: absolute; top: 0; left: 0"
+      />
+      <br />
+      <h1>YAMS Dashboard</h1>
+    </header>
+    <div class="grid-container" id="apps"></div>
+  </body>
+</html>
+
+<script>
+  const apps = [
+    {
+      name: "qBitTorrent ⬇",
+      id: "qbittorrent",
+      icon: "icons/linuxserver_qbittorrent.png",
+      port: "8080",
+      caption: "Torrent downloader",
+    },
+    {
+      name: "Radarr 🎥",
+      id: "radarr",
+      icon: "icons/linuxserver_radarr.png",
+      port: "7878",
+      caption: "Movie downloader",
+    },
+    {
+      name: "Sonarr 📺",
+      id: "sonarr",
+      icon: "icons/linuxserver_sonarr.png",
+      port: "8989",
+      caption: "TV downloader",
+    },
+    {
+      name: "Lidarr 🎵",
+      id: "lidarr",
+      icon: "icons/linuxserver_lidarr.png",
+      port: "8686",
+      caption: "Music downloader",
+    },
+    {
+      name: "Readarr 📚",
+      id: "readarr",
+      icon: "icons/readarr.png",
+      port: "8787",
+      caption: "Ebook downloader",
+    },
+    {
+      name: "Prowlarr 🔍",
+      id: "prowlarr",
+      icon: "icons/linuxserver_prowlarr.png",
+      port: "9696",
+      caption: "Index manager",
+    },
+    {
+      name: "Bazarr ㏄",
+      id: "bazarr",
+      icon: "icons/linuxserver_bazarr.png",
+      port: "6767",
+      caption: "Subtitle manager",
+    },
+    {
+      name: "Jellyfin ⏯",
+      id: "jellyfin",
+      icon: "icons/linuxserver_jellyfin.png",
+      port: "8096",
+      caption: "Media server",
+    },
+    {
+      name: "Emby ⏯",
+      id: "emby",
+      icon: "icons/linuxserver_emby.png",
+      port: "8096",
+      caption: "Media server",
+    },
+    {
+      name: "Plex ⏯",
+      id: "plex",
+      icon: "icons/linuxserver_plex.png",
+      port: "8096",
+      caption: "Media server",
+    },
+    {
+      name: "Portainer 🖥️",
+      id: "portainer",
+      icon: "icons/portainer.png",
+      port: "9000",
+      caption: "Container manager",
+    },
+  ];
+
+  (async () => {
+    for (const app of apps) {
+      const validRes = await valid(app.port);
+      if (validRes) {
+        const link = document.createElement("a");
+        link.href = `//${location.hostname}:${app.port}`;
+        const gridItem = document.createElement("div");
+        gridItem.classList.add("grid-item");
+        const innerContainer = document.createElement("div");
+        innerContainer.classList.add("inner-container");
+        const img = document.createElement("img");
+        img.src = app.icon;
+        img.alt = `${app.name} icon`;
+        const p = document.createElement("p");
+        p.textContent = app.name;
+        const caption = document.createElement("p");
+        caption.classList.add("caption");
+        caption.textContent = app.caption;
+        innerContainer.appendChild(img);
+        innerContainer.appendChild(p);
+        innerContainer.appendChild(caption);
+        gridItem.appendChild(innerContainer);
+        link.appendChild(gridItem);
+        document.getElementById("apps").appendChild(link);
+      }
+    }
+  })();
+
+  async function valid(port) {
+    try {
+      const res = await fetch(`//${location.hostname}:${port}/`, {
+        method: "HEAD",
+        mode: "no-cors",
+      });
+      return res.ok;
+    } catch (e) {
+      return false;
+    }
+  }
+</script>
