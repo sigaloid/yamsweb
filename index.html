@@ -70,6 +70,10 @@
 </html>
 
 <script>
+  const data = fetch("/apps")
+    .then((response) => response.text())
+    .catch((error) => console.error(error));
+
   const apps = [
     {
       name: "qBitTorrent ⬇",
@@ -149,44 +153,28 @@
       caption: "Container manager",
     },
   ];
-
-  (async () => {
-    for (const app of apps) {
-      const validRes = await valid(app.port);
-      if (validRes) {
-        const link = document.createElement("a");
-        link.href = `//${location.hostname}:${app.port}`;
-        const gridItem = document.createElement("div");
-        gridItem.classList.add("grid-item");
-        const innerContainer = document.createElement("div");
-        innerContainer.classList.add("inner-container");
-        const img = document.createElement("img");
-        img.src = app.icon;
-        img.alt = `${app.name} icon`;
-        const p = document.createElement("p");
-        p.textContent = app.name;
-        const caption = document.createElement("p");
-        caption.classList.add("caption");
-        caption.textContent = app.caption;
-        innerContainer.appendChild(img);
-        innerContainer.appendChild(p);
-        innerContainer.appendChild(caption);
-        gridItem.appendChild(innerContainer);
-        link.appendChild(gridItem);
-        document.getElementById("apps").appendChild(link);
-      }
-    }
-  })();
-
-  async function valid(port) {
-    try {
-      const res = await fetch(`//${location.hostname}:${port}/`, {
-        method: "HEAD",
-        mode: "no-cors",
-      });
-      return res.ok;
-    } catch (e) {
-      return false;
+  for (const app of apps) {
+    if (data.includes(app.id)) {
+      const link = document.createElement("a");
+      link.href = `//${location.hostname}:${app.port}`;
+      const gridItem = document.createElement("div");
+      gridItem.classList.add("grid-item");
+      const innerContainer = document.createElement("div");
+      innerContainer.classList.add("inner-container");
+      const img = document.createElement("img");
+      img.src = app.icon;
+      img.alt = `${app.name} icon`;
+      const p = document.createElement("p");
+      p.textContent = app.name;
+      const caption = document.createElement("p");
+      caption.classList.add("caption");
+      caption.textContent = app.caption;
+      innerContainer.appendChild(img);
+      innerContainer.appendChild(p);
+      innerContainer.appendChild(caption);
+      gridItem.appendChild(innerContainer);
+      link.appendChild(gridItem);
+      document.getElementById("apps").appendChild(link);
     }
   }
 </script>
