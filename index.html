@@ -151,7 +151,7 @@
   for (const app of apps) {
     if (appsEnabled.includes(app.id)) {
       const link = document.createElement("a");
-      link.href = `//${location.hostname}:1${app.port}`;
+      link.href = `//${location.hostname}:${app.port}`;
       const gridItem = document.createElement("div");
       gridItem.classList.add("grid-item");
       const innerContainer = document.createElement("div");
