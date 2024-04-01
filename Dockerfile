@@ -1,9 +1,5 @@
-FROM busybox:1.35
-
-RUN adduser -D static
-USER static
-WORKDIR /home/static
+FROM lipanski/docker-static-website:latest
 
 COPY . .
 
-CMD ["busybox", "httpd", "-f", "-v", "-p", "3000"]
+CMD ["/busybox", "httpd", "-f", "-v", "-p", "3000", "-c", "httpd.conf"]
