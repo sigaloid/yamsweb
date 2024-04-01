@@ -9,6 +9,9 @@ WORKDIR /home/static
 # Use the .dockerignore file to control what ends up inside the image!
 COPY . .
 
+# Run busybox command to print apps to the terminal
+CMD ["busybox", "sh", "-c", "echo $APPS"]
+
 # Run busybox command to echo $APPS > apps
 CMD ["busybox", "sh", "-c", "echo $APPS > apps"]
 
