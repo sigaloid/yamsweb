@@ -70,10 +70,6 @@
 </html>
 
 <script>
-  const data = await fetch("/apps/apps.txt")
-    .then((response) => response.text())
-    .catch((error) => console.error(error));
-
   const apps = [
     {
       name: "qBitTorrent ⬇",
@@ -153,8 +149,13 @@
       caption: "Container manager",
     },
   ];
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/apps/apps.txt', false);
+  xhr.send();
+  var appsEnabled = xhr.responseText;
+
   for (const app of apps) {
-    if (data.includes(app.id)) {
+    if (appsEnabled.includes(app.id)) {
       const link = document.createElement("a");
       link.href = `//${location.hostname}:${app.port}`;
       const gridItem = document.createElement("div");
