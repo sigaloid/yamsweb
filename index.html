@@ -159,10 +159,18 @@
   xhr.send();
   var appsEnabled = xhr.responseText;
 
+  var xhr2 = new XMLHttpRequest();
+  xhr2.open('GET', '/apps/portprefix.txt', false);
+  xhr2.send();
+  var portPrefix = "";
+  if (xhr2.status != 404) {
+    portPrefix = xhr2.responseText;
+  }
+
   for (const app of apps) {
     if (appsEnabled.includes(app.id)) {
       const link = document.createElement("a");
-      link.href = `//${location.hostname}:${app.port}`;
+      link.href = `//${location.hostname}:${portPrefix}${app.port}`;
       link.target = "_blank";
       const gridItem = document.createElement("div");
       gridItem.classList.add("grid-item");
