@@ -1,3 +1,4 @@
 .git/
 *.png
 *.md
+logo.webp # ignored for now
