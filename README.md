@@ -30,36 +30,45 @@ mkdir yamsweb
 echo "qbittorrent,radarr,sonarr,lidarr,readarr,prowlarr,bazarr,jellyfin" | tee yamsweb/apps.txt
 # 3000 is the internal port, 4242 is the external port.
 docker run -d -p 4242:3000 --name yamsweb -v $(pwd)/yamsweb:/home/static/apps quay.io/sigaloid/yamsweb
-# Open http://[IP]:4242/
 ```
+
+Or, add to your docker-compose:
+```yaml
+  yamsweb:
+    image: quay.io/sigaloid/yamsweb
+    container_name: yamsweb
+    volumes:
+      - ${INSTALL_DIRECTORY}/config/yamsweb:/home/static/apps
+    ports:
+      - 4242:3000
+```
+
+Now open [IP]:4242!
 
 ### Port prefix mode
 
 If you're like me, you hate viewing your local services with an insecure HTTP connection. Even if you're on your own network, or over a Tailscale network, still annoying to click through the HTTPS everywhere prompt in Firefox. Well, what I do is use Tailscale's Caddy integration in order to HTTPS-ify my server, while keeping it private and away from the internet (limited to my Tailscale network). But you can't do subdomaining with Tailscale, it's a pain to subdirectorify everything, so my fix is to expose each service over a port on the same HTTPS server via Caddy. But you can't listen on :8080 if there's a local program doing so, and manually changing every app to only listen on localhost is annoying. So what I do is modify the port. My caddy config:
 
 ```caddy
-
-https://ts-site.ts.net:443 {
+# override for yamsweb
+https://ts-site.ts.net {
        	reverse_proxy :4242
 }
 
+# service with 1 prepended to port
 https://ts-site.ts.net:18080 {
        	reverse_proxy :8080
 }
 
+# etc
 https://ts-site.ts.net:17878 {
        	reverse_proxy :7878
 }
 
-https://ts-site.ts.net:18989 {
-       	reverse_proxy :8989
-}
-
-https://ts-site.ts.net:18686 {
-        reverse_proxy :8686
-}
-# ... more
-
+# ... more for every service of yours
 ```
+
+This way, you can simply access "device.tailscale-network.ts.net" on any Tailscale-connected device and it will load your web UI!
+
 
 I appended a 1 to every port and reverse proxied it with SSL. But that breaks the links in this site! So if you want to manually prefix this type of thing to your ports linked here, put the number in `yamsweb/portprefix.txt`. I put 1, so it adds 1 to every port.
